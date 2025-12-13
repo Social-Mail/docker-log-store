@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Dev Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "runtimeArgs": [
+                "--enable-source-maps"
+            ],
+            "program": "${workspaceFolder}/dev.js",
+            "env": {
+                "TRACER_AUTH_COOKIE_SECURE": "false",
+                "TRACER_AUTH_COOKIE": "sm-ta1",
+                "TRACER_AUTH_SHARE_COOKIE": "sm-sta1",
+                "TRACER_AV": "null",
+                "TRACER_DB_SSL": "null",
+                "TRACER_TMP_PATH": "d:/temp/t1",
+                "TRACER_SSL_MODE": "self-signed",
+                "PORT": "9090"
+            },
+            "outFiles": [
+                "${workspaceFolder}/dist/**/*.js",
+                "${workspaceFolder}/node_modules/@entity-access/**/*.js",
+            ]
+        }
+    ]
+}
