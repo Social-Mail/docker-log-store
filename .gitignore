@@ -140,3 +140,4 @@ vite.config.ts.timestamp-*
 /log-agent/.vs/DockerLogStoreAgent
 /log-agent/obj
 /log-agent/bin
+log-agent/.vs

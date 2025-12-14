@@ -29,16 +29,22 @@ internal class Program
             .CreateClient();
 
 
-        var containers = await client.Containers.ListContainersAsync(new Docker.DotNet.Models.ContainersListParameters { All = true });
-
-        foreach (var container in containers) {
-            // watch logs...
-            Task.Run(() => WatchLogs(client, container));
-        }
-
         // ping...
         while (true)
         {
+
+            var systemInfo = await client.System.GetSystemInfoAsync();
+
+            var totalCPU = systemInfo.NCPU;
+            var totalMemory = systemInfo.MemTotal;
+
+            var containers = await client.Containers.ListContainersAsync(new Docker.DotNet.Models.ContainersListParameters { All = true });
+
+            foreach (var container in containers) {
+                // watch logs...
+                Task.Run(() => WatchLogs(client, container));
+            }
+
             await Task.Delay(1000);
         }
 
