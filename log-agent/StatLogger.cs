@@ -28,7 +28,7 @@ internal class StatLogger
         foreach (var container in list)
         {
 
-            containerLogger.StartLogging(client, container.ID, container.State);
+            containerLogger.StartLogging(client, container.ID, container.State, container.Names);
 
             if (container.State == "running")
             {
