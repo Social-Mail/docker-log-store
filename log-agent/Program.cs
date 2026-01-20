@@ -1,6 +1,6 @@
-﻿using Docker.DotNet;
-using Docker.DotNet.Models;
-using System.ComponentModel;
+﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+
 
 namespace DockerLogStoreAgent;
 
@@ -8,50 +8,24 @@ internal class Program
 {
     static void Main(string[] args)
     {
-        Task.Run(async () =>
+        var builder = Host.CreateDefaultBuilder(args); // or HostApplicationBuilder.Create(args); in newer versions
+
+        builder.ConfigureServices((hostContext, services) =>
         {
-            try
-            {
-                await MainAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-            }
+            services.AddMemoryCache();
+
+            // Register your services here
+            services.AddHostedService<DockerListener>();
+            services.AddSingleton<PushClient>();
+            services.AddSingleton<ContainerLogger>();
+            services.AddSingleton<StatLogger>();
+
         });
+
+        var host = builder.Build();
+
+        // Run your application logic
+        host.Run();
     }
 
-    static async Task MainAsync()
-    {
-
-        DockerClient client = new DockerClientConfiguration(
-             new Uri("unix:///var/run/docker.sock"))
-            .CreateClient();
-
-
-        // ping...
-        while (true)
-        {
-
-            var systemInfo = await client.System.GetSystemInfoAsync();
-
-            var totalCPU = systemInfo.NCPU;
-            var totalMemory = systemInfo.MemTotal;
-
-            var containers = await client.Containers.ListContainersAsync(new Docker.DotNet.Models.ContainersListParameters { All = true });
-
-            foreach (var container in containers) {
-                // watch logs...
-                Task.Run(() => WatchLogs(client, container));
-            }
-
-            await Task.Delay(1000);
-        }
-
-    }
-
-    private static void WatchLogs(DockerClient client, ContainerListResponse container)
-    {
-        container.
-    }
 }
