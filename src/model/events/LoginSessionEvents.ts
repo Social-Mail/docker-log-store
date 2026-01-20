@@ -60,6 +60,9 @@ export default class LoginSessionEvents extends EntityEvents<LoginSession> {
 
         entity.userName = entity.userName.toLowerCase();
 
+        // logging on console so admin can login
+        console.log(`login code is ${entity.code}`);
+
         // get user...
         const appUser = await this.db.users
             .where(entity, (p) => (x) => x.userName === p.userName)
