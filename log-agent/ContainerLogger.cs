@@ -25,7 +25,6 @@ internal class ContainerLogger
 
     internal void StartLogging(DockerClient client, string id, string state, IList<string> names)
     {
-        // Task.Run(() => this.StartLoggingAsync(client, id, state));
         var key = $"logger-task-{id}";
         Task.Run(() => cache.GetOrCreateAsync(key, async (k) =>
         {
@@ -57,18 +56,29 @@ internal class ContainerLogger
             {
                 var r = await stream.ReadOutputAsync(buffer, 0, buffer.Length, CancellationToken.None);
                 var len = r.Count;
-                await RequestBuilder
-                    .Put($"log/{id}/{r.Target.ToString()}")
-                    .Body(new {
-                        names,
-                        data = Convert.ToBase64String(buffer, 0, len, Base64FormattingOptions.None),
-                        eof = r.EOF
-                    }).GetResponseAsync(this.client.HttpClient);
+
+                var data = Convert.ToBase64String(buffer, 0, len, Base64FormattingOptions.None);
+                var eof = r.EOF;
+                var time = DateTime.UtcNow;
+
+                // try three times...
+                RetryTask.Retry(() => 
+
+                    RequestBuilder
+                        .Put($"log/{id}/{r.Target.ToString()}")
+                        .Body(new {
+                            names,
+                            data,
+                            eof,
+                            time,
+                        }).GetResponseAsync(this.client.HttpClient)
+                );
             }
             
         }
         catch (Exception ex)
         {
+            System.Diagnostics.Debug.WriteLine(ex);
         }
         return "done";
     }

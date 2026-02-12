@@ -32,6 +32,6 @@ internal class PushClient
         {
             this.serverID = name;
         }
-        HttpClient.BaseAddress = new Uri($"https://{host}/api/push/${this.serverID}");
+        HttpClient.BaseAddress = new Uri($"https://{host}/api/push/${this.serverID}/");
     }
 }

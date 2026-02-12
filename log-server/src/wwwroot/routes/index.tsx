@@ -1,11 +1,11 @@
 import Inject from "@entity-access/entity-access/dist/di/di.js";
 import Page from "@entity-access/server-pages/dist/Page.js";
-import DBConfig, { UIPackageConfig } from "../model/DBConfig.js";
+import DBConfig, { UIPackageConfig } from "../../model/DBConfig.js";
 import Content, { FileResult } from "@entity-access/server-pages/dist/Content.js";
 import HtmlDocument from "@entity-access/server-pages/dist/html/HtmlDocument.js";
 import WebAtomsLogo from "@entity-access/server-pages/dist/html/WebAtomsLogo.js";
 import XNode from "@entity-access/server-pages/dist/html/XNode.js";
-import { ImagesFolder } from "../ImagesFolder.js";
+import { ImagesFolder } from "../../ImagesFolder.js";
 
 
 export default class extends Page {

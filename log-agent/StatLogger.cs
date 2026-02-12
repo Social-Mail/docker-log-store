@@ -38,10 +38,47 @@ internal class StatLogger
 
                 }, stoppingToken);
 
+                var time = DateTime.UtcNow;
+
+                try
+                {
+
+                    await RequestBuilder.Put("stats/" + container.ID)
+                        .Body(new
+                        {
+                            id = container.ID,
+                            names = container.Names,
+                            state = container.State,
+                            status = container.Status,
+                            command = container.Command,
+                            image = container.Image,
+                            imageID = container.ImageID,
+                            sizeRootFs = container.SizeRootFs,
+                            sizeRw = container.SizeRw,
+                            time,
+                            ports = container.Ports.Select((p) => new
+                            {
+                                @private = p.PrivatePort,
+                                @public = p.PublicPort,
+                                ip = p.IP,
+                                type = p.Type,
+                            }),
+                            processes = processList.Processes
+                        })
+                        .GetResponseAsync(this.client.HttpClient);
+                } catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex);
+                }
+
+                continue;
+            }
+            try
+            {
+                var time = DateTime.UtcNow;
                 await RequestBuilder.Put("stats")
                     .Body(new
                     {
-                        time = DateTime.UtcNow,
                         id = container.ID,
                         names = container.Names,
                         state = container.State,
@@ -51,39 +88,21 @@ internal class StatLogger
                         imageID = container.ImageID,
                         sizeRootFs = container.SizeRootFs,
                         sizeRw = container.SizeRw,
-                        ports = container.Ports.Select((p) => new {
+                        time,
+                        ports = container.Ports.Select((p) => new
+                        {
                             @private = p.PrivatePort,
                             @public = p.PublicPort,
                             ip = p.IP,
                             type = p.Type,
                         }),
-                        processes = processList.Processes
                     })
                     .GetResponseAsync(this.client.HttpClient);
-
-                continue;
             }
-            await RequestBuilder.Put("stats")
-                .Body(new
-                {
-                    time = DateTime.UtcNow,
-                    id = container.ID,
-                    names = container.Names,
-                    state = container.State,
-                    status = container.Status,
-                    command = container.Command,
-                    image = container.Image,
-                    imageID = container.ImageID,
-                    sizeRootFs = container.SizeRootFs,
-                    sizeRw = container.SizeRw,
-                    ports = container.Ports.Select((p) => new {
-                        @private = p.PrivatePort,
-                        @public = p.PublicPort,
-                        ip = p.IP,
-                        type = p.Type,
-                    }),
-                })
-                .GetResponseAsync(this.client.HttpClient);
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
 
     }

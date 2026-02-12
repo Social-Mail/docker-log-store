@@ -38,7 +38,13 @@ internal class DockerListener : BackgroundService
                 while (!stoppingToken.IsCancellationRequested)
                 {
 
-                    await statLogger.ReportContainerStatsAsync(systemInfo, client, stoppingToken);
+                    try
+                    {
+                        await statLogger.ReportContainerStatsAsync(systemInfo, client, stoppingToken);
+                    } catch (Exception ex)
+                    {
+                        this.logger.LogError(ex, ex.Message);
+                    }
 
                     // start logging
                     await Task.Delay(5000);

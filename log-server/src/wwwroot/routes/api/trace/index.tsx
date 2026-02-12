@@ -1,10 +1,10 @@
 import Content from "@entity-access/server-pages/dist/Content.js";
 import Page from "@entity-access/server-pages/dist/Page.js";
-import AppDbContext from "../../../model/AppDbContext.js";
+import AppDbContext from "../../../../model/AppDbContext.js";
 import TimedCache from "@entity-access/entity-access/dist/common/cache/TimedCache.js";
 import { Prepare } from "@entity-access/server-pages/dist/decorators/Prepare.js";
-import AppSocketService from "../../../socket/SocketService.js";
-import { globalServices } from "../../../globalServices.js";
+import AppSocketService from "../../../../socket/SocketService.js";
+import { globalServices } from "../../../../globalServices.js";
 import Sql from "@entity-access/entity-access/dist/sql/Sql.js";
 
 const cache = new TimedCache<string,number>();
