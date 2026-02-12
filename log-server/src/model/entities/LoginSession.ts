@@ -60,29 +60,7 @@ export default class LoginSession {
      * This will not be saved into database
      */
     @JsonProperty()
-    public userName: string;
-
-    /**
-     * This will not be saved to database, but it might be
-     * sent to us via network, we will investigate if user
-     * exists or not
-     */
-    @JsonProperty()
-    public checkPassword: string;
-
-    /**
-     * You need to supply new password if user's status
-     * is set to change-password
-     */
-    @JsonProperty()
-    public newPassword: string ;
-
-
-    @JsonProperty({ help: "Multi Factor Auth Token"})
-    public timeToken: string;
-
-    @JsonProperty({ help: "One Time Password"})
-    public oneTimePassword: string;
+    public emailAddress: string;
 
     public user: User;
 

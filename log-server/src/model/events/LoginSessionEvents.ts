@@ -56,20 +56,15 @@ export default class LoginSessionEvents extends EntityEvents<LoginSession> {
 
     async beforeInsert(entity: LoginSession, entry: ChangeEntry) {
 
-        entity.code = randomInt(9999,99999) + "";
-
-        entity.userName = entity.userName.toLowerCase();
-
-        // logging on console so admin can login
-        console.log(`login code is ${entity.code}`);
+        entity.code = randomInt(10000,99999).toString();
 
         // get user...
         const appUser = await this.db.users
-            .where(entity, (p) => (x) => x.userName === p.userName)
+            .where(entity, (p) => (x) => x.emailAddress === p.emailAddress)
             .first();
 
         if(!appUser) {
-            throw new EntityAccessError(`User not ${entity.userName} registered`);
+            throw new EntityAccessError(`User not ${entity.emailAddress} registered`);
         }
 
         const { host, port, username: user, password: pass, fromName: name, fromAddress: address } = globalEnv.smtp;
@@ -79,7 +74,7 @@ export default class LoginSessionEvents extends EntityEvents<LoginSession> {
 
         const result = await transporter.sendMail({
             from: { address, name },
-            to: entity.userName,
+            to: entity.emailAddress,
             subject: `Your verification code for login ref: ${DateTime.now.msSinceEpoch.toString(36)}`,
             html: Buffer.from(`
                 <div>
@@ -96,7 +91,7 @@ export default class LoginSessionEvents extends EntityEvents<LoginSession> {
         });
 
         if(!result.accepted?.length) {
-            console.log(`could not send email to ${entity.userName}, ${result.rejectedErrors?.join("\n")}`)
+            console.log(`could not send email to ${entity.emailAddress}, ${result.rejectedErrors?.join("\n")}`)
         }
     }
 

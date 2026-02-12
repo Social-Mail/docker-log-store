@@ -3,19 +3,8 @@ import Table from "@entity-access/entity-access/dist/decorators/Table.js";
 import type LoginSession from "./LoginSession.js";
 import Index from "@entity-access/entity-access/dist/decorators/Index.js";
 import DateTime from "@entity-access/entity-access/dist/types/DateTime.js";
-import { JsonProperty, ReadOnlyJsonProperty } from "@entity-access/server-pages/dist/services/ModelService.js";
+import { ReadOnlyJsonProperty } from "@entity-access/server-pages/dist/services/ModelService.js";
 
-export class ChangePassword {
-
-    @JsonProperty()
-    public oldPassword?: string;
-
-    @JsonProperty()
-    public newPassword: string;
-
-    @JsonProperty()
-    public forceChangePasswordOnLogin: boolean;
-}
 
 export const userStatuses = ["active", "blocked", "locked", "change-password", "external"] as const;
 export type userStatusType = typeof userStatuses[number];
@@ -28,9 +17,10 @@ export type userRolesType = typeof userRoles[number];
 @Index({
     name: "IX_Unique_UserName",
     columns: [{
-        name: (x) => x.userName,
+        name: (x) => x.emailAddress,
         descending: false
-    }]
+    }],
+    unique: true
 })
 export class User {
 
@@ -38,7 +28,7 @@ export class User {
     public userID: number;
 
     @Column({ dataType: "Char" , length: 200 })
-    public userName: string;
+    public emailAddress: string;
 
     @Column({ dataType: "Char" , length: 200 })
     public displayName: string;
