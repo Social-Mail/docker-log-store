@@ -55,6 +55,8 @@ internal class StatLogger
                             imageID = container.ImageID,
                             sizeRootFs = container.SizeRootFs,
                             sizeRw = container.SizeRw,
+                            totalMemory = systemInfo.MemTotal,
+                            cpu = systemInfo.NCPU,
                             time,
                             ports = container.Ports.Select((p) => new
                             {
@@ -88,6 +90,8 @@ internal class StatLogger
                         imageID = container.ImageID,
                         sizeRootFs = container.SizeRootFs,
                         sizeRw = container.SizeRw,
+                        totalMemory = systemInfo.MemTotal,
+                        cpu = systemInfo.NCPU,
                         time,
                         ports = container.Ports.Select((p) => new
                         {
